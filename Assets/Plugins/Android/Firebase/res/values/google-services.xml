@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
+  <string name="firebase_database_url" translatable="false">https://timberman-f8f4d.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">399062903910</string>
+  <string name="google_storage_bucket" translatable="false">timberman-f8f4d.appspot.com</string>
+  <string name="project_id" translatable="false">timberman-f8f4d</string>
+  <string name="google_api_key" translatable="false">AIzaSyCwoehLgTrkQo2q9sQxEB9XGarhCJi3qcI</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCwoehLgTrkQo2q9sQxEB9XGarhCJi3qcI</string>
+  <string name="google_app_id" translatable="false">1:399062903910:android:1f99b580bed804a3d411a7</string>
+  <string name="default_web_client_id" translatable="false">399062903910-s7ar6q6tuvepuvbcrjcdk701f51gj7pf.apps.googleusercontent.com</string>
+</resources>

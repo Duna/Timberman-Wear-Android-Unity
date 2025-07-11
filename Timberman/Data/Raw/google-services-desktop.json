@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "399062903910",
+    "firebase_url": "https://timberman-f8f4d.firebaseio.com",
+    "project_id": "timberman-f8f4d",
+    "storage_bucket": "timberman-f8f4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399062903910:android:1f99b580bed804a3d411a7",
+        "android_client_info": {
+          "package_name": "com.dunatv.timberman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399062903910-s7ar6q6tuvepuvbcrjcdk701f51gj7pf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwoehLgTrkQo2q9sQxEB9XGarhCJi3qcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399062903910-s7ar6q6tuvepuvbcrjcdk701f51gj7pf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
