@@ -1,0 +1,42 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    google()
+  }
+  dependencies {
+    classpath "com.android.tools.build:gradle:8.9.3"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    classpath "com.google.gms:google-services:4.4.2"
+  }
+}
+
+allprojects {
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+}
+
+configure(subprojects - project(':android')) {
+  apply plugin: 'java-library'
+  apply plugin: 'kotlin'
+  java.sourceCompatibility = 8
+  java.targetCompatibility = 8
+
+  compileJava {
+    options.incremental = true
+  }
+  compileKotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+  compileTestKotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+}
+
+subprojects {
+  version = "$projectVersion"
+  ext.appName = 'Timberman Wear'
+  repositories {
+    mavenCentral()
+    google()
+    maven { url = 'https://jitpack.io' }
+  }
+}
+
+eclipse.project.name = 'Timberman Wear' + '-parent'
