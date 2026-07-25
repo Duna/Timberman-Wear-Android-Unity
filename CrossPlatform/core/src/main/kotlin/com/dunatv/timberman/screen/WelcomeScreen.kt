@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.dunatv.timberman.TimbermanGame
+import com.dunatv.timberman.util.Constants
 
 class WelcomeScreen(game: TimbermanGame) : BaseScreen(game) {
     private lateinit var stage: Stage
@@ -20,7 +21,7 @@ class WelcomeScreen(game: TimbermanGame) : BaseScreen(game) {
 
     override fun show() {
         skin = game.createSkin()
-        stage = Stage(FitViewport(450f, 450f))
+        stage = Stage(FitViewport(Constants.UI_VIEWPORT_SIZE, Constants.UI_VIEWPORT_SIZE))
         Gdx.input.inputProcessor = stage
 
         logoTexture = Texture(Gdx.files.internal("textures/timber_logo.png"))
@@ -32,7 +33,7 @@ class WelcomeScreen(game: TimbermanGame) : BaseScreen(game) {
         val nameField = TextField("", skin)
         nameField.messageText = "Enter your name"
         nameField.setAlignment(1)
-        table.add(nameField).width(250f).height(50f).padBottom(20f)
+        table.add(nameField).width(Constants.NAME_FIELD_WIDTH).height(Constants.NAME_FIELD_HEIGHT).padBottom(Constants.NAME_FIELD_PAD_BOTTOM)
         table.row()
 
         val confirmButton = TextButton("OK", skin)

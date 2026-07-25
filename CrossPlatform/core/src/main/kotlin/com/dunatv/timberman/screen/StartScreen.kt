@@ -1,6 +1,7 @@
 package com.dunatv.timberman.screen
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.dunatv.timberman.TimbermanGame
+import com.dunatv.timberman.util.Constants
 
 class StartScreen(game: TimbermanGame) : BaseScreen(game) {
     private lateinit var stage: Stage
@@ -21,7 +23,7 @@ class StartScreen(game: TimbermanGame) : BaseScreen(game) {
     private lateinit var topTexture: Texture
 
     override fun show() {
-        stage = Stage(FitViewport(450f, 450f))
+        stage = Stage(FitViewport(Constants.UI_VIEWPORT_SIZE, Constants.UI_VIEWPORT_SIZE))
         Gdx.input.inputProcessor = stage
 
         logoTexture = Texture(Gdx.files.internal("textures/timber_logo.png"))
@@ -34,17 +36,15 @@ class StartScreen(game: TimbermanGame) : BaseScreen(game) {
         table.center()
 
         val logoDrawable = TextureRegionDrawable(TextureRegion(logoTexture))
-        logoDrawable.minWidth = 200f
-        logoDrawable.minHeight = 200f
+        logoDrawable.minWidth = Constants.LOGO_SIZE
+        logoDrawable.minHeight = Constants.LOGO_SIZE
         val logoImage = Image(logoDrawable)
-        table.add(logoImage).size(200f, 200f).padBottom(15f).colspan(3)
+        table.add(logoImage).size(Constants.LOGO_SIZE, Constants.LOGO_SIZE).padBottom(Constants.LOGO_PAD_BOTTOM).colspan(3)
         table.row()
 
-        // exit.png 252x256 (square), play.png 37x23 (wide), top.png 37x23 (wide)
-        // Use exit height as reference, scale play/top to match height with correct ratio
-        val exitSize = 60f
+        val exitSize = Constants.BUTTON_SIZE
         val playTopH = exitSize
-        val playTopW = playTopH * (37f / 23f)
+        val playTopW = playTopH * Constants.BUTTON_ASPECT_RATIO
 
         val playDrawable = TextureRegionDrawable(TextureRegion(playTexture))
         playDrawable.minWidth = playTopW
@@ -76,15 +76,16 @@ class StartScreen(game: TimbermanGame) : BaseScreen(game) {
             }
         })
 
-        table.add(playButton).size(playTopW, playTopH).padRight(10f)
-        table.add(exitButton).size(exitSize, exitSize).padRight(10f)
+        table.add(playButton).size(playTopW, playTopH).padRight(Constants.BUTTON_PAD_RIGHT)
+        table.add(exitButton).size(exitSize, exitSize).padRight(Constants.BUTTON_PAD_RIGHT)
         table.add(topButton).size(playTopW, playTopH)
 
         stage.addActor(table)
     }
 
     override fun render(delta: Float) {
-        clearScreen()
+        Gdx.gl.glClearColor(Constants.DARK_GRAY, Constants.DARK_GRAY, Constants.DARK_GRAY, 1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.act(delta)
         stage.draw()
     }

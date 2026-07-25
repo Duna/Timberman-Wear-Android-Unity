@@ -24,7 +24,7 @@ abstract class BaseScreen(protected val game: TimbermanGame) : Screen {
     }
 
     protected fun clearScreen() {
-        Gdx.gl.glClearColor(0.2f, 0.6f, 0.3f, 1f)
+        Gdx.gl.glClearColor(Constants.CLEAR_R, Constants.CLEAR_G, Constants.CLEAR_B, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     }
 

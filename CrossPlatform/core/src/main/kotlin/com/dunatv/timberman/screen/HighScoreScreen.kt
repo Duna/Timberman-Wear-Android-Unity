@@ -21,7 +21,7 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
 
     override fun show() {
         skin = game.createSkin()
-        stage = Stage(FitViewport(450f, 450f))
+        stage = Stage(FitViewport(Constants.UI_VIEWPORT_SIZE, Constants.UI_VIEWPORT_SIZE))
         Gdx.input.inputProcessor = stage
 
         backTexture = Texture(Gdx.files.internal("textures/back.png"))
@@ -31,8 +31,8 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
         rootTable.top().pad(20f)
 
         val titleLabel = Label("High Scores", skin)
-        titleLabel.setFontScale(1.3f)
-        rootTable.add(titleLabel).padBottom(15f)
+        titleLabel.setFontScale(Constants.TITLE_FONT_SCALE)
+        rootTable.add(titleLabel).padBottom(Constants.SCORE_LIST_PAD_BOTTOM)
         rootTable.row()
 
         val listTable = Table()
@@ -65,11 +65,11 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
 
         val scrollPane = ScrollPane(listTable, skin)
         scrollPane.setScrollingDisabled(true, false)
-        rootTable.add(scrollPane).expand().fill().padBottom(15f)
+        rootTable.add(scrollPane).expand().fill().padBottom(Constants.SCORE_LIST_PAD_BOTTOM)
         rootTable.row()
 
-        val backH = 60f
-        val backW = backH * (37f / 23f)
+        val backH = Constants.BACK_BUTTON_HEIGHT
+        val backW = backH * Constants.BACK_BUTTON_ASPECT_RATIO
         val backDrawable = TextureRegionDrawable(TextureRegion(backTexture))
         backDrawable.minWidth = backW
         backDrawable.minHeight = backH
@@ -110,9 +110,9 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
                 scoreLabel.color = otherColor
             }
 
-            table.add(nameLabel).expandX().left().padRight(10f)
+            table.add(nameLabel).expandX().left().padRight(Constants.SCORE_LIST_PAD_RIGHT)
             table.add(scoreLabel).right()
-            table.row().padTop(5f)
+            table.row().padTop(Constants.SCORE_LIST_PAD_TOP)
         }
     }
 

@@ -49,12 +49,12 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
         clearScreen()
 
-        // timerBar.update(delta)
-        // if (timerBar.isDead) {
-        //     Gdx.app.log("TimbermanGame", "DEATH by timer, score=$score")
-        //     onGameOver()
-        //     return
-        // }
+        timerBar.update(delta)
+        if (timerBar.isDead) {
+            Gdx.app.log("TimbermanGame", "DEATH by timer, score=$score")
+            onGameOver()
+            return
+        }
 
         cloudLayer.update(delta)
         backgroundLayer.update(delta)
@@ -101,26 +101,26 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
     private fun renderHUD() {
         val scoreText = score.toString()
-        layout.setText(game.smallFont, scoreText)
-        game.smallFont.draw(batch, scoreText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 0.3f)
+        layout.setText(game.tinyFont, scoreText)
+        game.tinyFont.draw(batch, scoreText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - Constants.HUD_SCORE_OFFSET_Y)
 
         val bestScore = game.prefs.getHighScore()
         val bestText = "Best: $bestScore"
-        layout.setText(game.smallFont, bestText)
-        game.smallFont.draw(batch, bestText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 1.0f)
+        layout.setText(game.tinyFont, bestText)
+        game.tinyFont.draw(batch, bestText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - Constants.HUD_BEST_OFFSET_Y)
 
-        timerBar.render(batch, -2f, Constants.WORLD_HEIGHT / 2f - 1.6f, 4f, 0.3f)
+        timerBar.render(batch, Constants.TIMER_BAR_X, -Constants.WORLD_HEIGHT / 2f + Constants.TIMER_BAR_BOTTOM_OFFSET, Constants.TIMER_BAR_WIDTH, Constants.TIMER_BAR_HEIGHT)
     }
 
     private fun renderTapHint(delta: Float) {
         if (tapHintFadeIn) {
-            tapHintAlpha += delta * 2f
+            tapHintAlpha += delta * Constants.TAP_HINT_FADE_SPEED
             if (tapHintAlpha >= 1f) {
                 tapHintAlpha = 1f
                 tapHintFadeIn = false
             }
         } else {
-            tapHintAlpha -= delta * 2f
+            tapHintAlpha -= delta * Constants.TAP_HINT_FADE_SPEED
             if (tapHintAlpha <= 0f) {
                 tapHintAlpha = 0f
                 tapHintFadeIn = true
@@ -131,7 +131,7 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         batch.setColor(1f, 1f, 1f, tapHintAlpha)
         val tapW = tapTexture.width / 100f
         val tapH = tapTexture.height / 100f
-        batch.draw(tapTexture, -tapW / 2f, -1f, tapW, tapH)
+        batch.draw(tapTexture, -tapW / 2f, Constants.TAP_HINT_Y, tapW, tapH)
         batch.color = oldColor
     }
 

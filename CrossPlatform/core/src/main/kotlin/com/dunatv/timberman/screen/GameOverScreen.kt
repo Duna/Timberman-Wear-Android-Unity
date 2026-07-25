@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.dunatv.timberman.TimbermanGame
+import com.dunatv.timberman.util.Constants
 
 class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScreen(game) {
     private lateinit var stage: Stage
@@ -24,7 +25,7 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
 
     override fun show() {
         skin = game.createSkin()
-        stage = Stage(FitViewport(450f, 450f))
+        stage = Stage(FitViewport(Constants.UI_VIEWPORT_SIZE, Constants.UI_VIEWPORT_SIZE))
         Gdx.input.inputProcessor = stage
 
         gameOverTexture = Texture(Gdx.files.internal("textures/game_over.png"))
@@ -35,8 +36,8 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
         val textRegion = TextureRegion(gameOverBgTexture, 153, 0, 106, 58)
         val chainRegion = TextureRegion(gameOverTexture, 264, 3, 12, 134)
 
-        val screenW = 450f
-        val screenH = 450f
+        val screenW = Constants.UI_VIEWPORT_SIZE
+        val screenH = Constants.UI_VIEWPORT_SIZE
 
         // Layout constants — board sized to fit round watch
         val boardW = 260f
@@ -81,13 +82,13 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
 
         val scoreLabel = Label("Score: $finalScore", skin)
         scoreLabel.setAlignment(Align.center)
-        boardTable.add(scoreLabel).expandX().center().padBottom(8f)
+        boardTable.add(scoreLabel).expandX().center().padBottom(Constants.GAMEOVER_SCORE_PAD_BOTTOM)
         boardTable.row()
 
         val bestScore = game.prefs.getHighScore()
         val bestLabel = Label("Best: $bestScore", skin)
         bestLabel.setAlignment(Align.center)
-        boardTable.add(bestLabel).expandX().center().padBottom(12f)
+        boardTable.add(bestLabel).expandX().center().padBottom(Constants.GAMEOVER_BEST_PAD_BOTTOM)
         boardTable.row()
 
         val okButton = TextButton("OK", skin)

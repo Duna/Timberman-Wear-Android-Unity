@@ -16,6 +16,7 @@ class AndroidFirebaseService : FirebaseService {
     private val auth by lazy { FirebaseAuth.getInstance() }
     private var cachedScores: List<UserScore> = emptyList()
     private var authenticated = false
+    private var pendingScore: Triple<String, Int, Int>? = null
 
     override fun initialize() {
         Log.d(TAG, "initialize() called, signing in anonymously...")
@@ -24,6 +25,7 @@ class AndroidFirebaseService : FirebaseService {
                 Log.d(TAG, "Anonymous auth SUCCESS, uid=${auth.currentUser?.uid}")
                 authenticated = true
                 cleanupDuplicates()
+                flushPendingScore()
                 listenForScores { scores ->
                     Log.d(TAG, "listenForScores callback: ${scores.size} scores cached")
                     cachedScores = scores
@@ -36,6 +38,13 @@ class AndroidFirebaseService : FirebaseService {
                     cachedScores = scores
                 }
             }
+    }
+
+    private fun flushPendingScore() {
+        val pending = pendingScore ?: return
+        pendingScore = null
+        Log.d(TAG, "flushPendingScore: submitting queued score ${pending.second} for ${pending.first}")
+        submitScore(pending.first, pending.second, pending.third)
     }
 
     private fun cleanupDuplicates() {
@@ -75,6 +84,11 @@ class AndroidFirebaseService : FirebaseService {
 
     override fun submitScore(name: String, score: Int, previousHighScore: Int) {
         Log.d(TAG, "submitScore(name=$name, score=$score, prevHigh=$previousHighScore, auth=$authenticated)")
+        if (!authenticated) {
+            Log.d(TAG, "submitScore: not authenticated yet, queuing score")
+            pendingScore = Triple(name, score, previousHighScore)
+            return
+        }
         val playerRef = dbRef.child(name)
         playerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

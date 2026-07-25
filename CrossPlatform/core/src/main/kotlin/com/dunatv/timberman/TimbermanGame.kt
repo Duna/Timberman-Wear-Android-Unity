@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle
+import com.dunatv.timberman.util.Constants
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.dunatv.timberman.firebase.FirebaseService
@@ -24,6 +25,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
     lateinit var smallFont: BitmapFont
+    lateinit var tinyFont: BitmapFont
     lateinit var largeFont: BitmapFont
     lateinit var prefs: Prefs
 
@@ -35,28 +37,36 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
         val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/font.ttf"))
 
         val param = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-            size = 48
+            size = Constants.FONT_SIZE
             color = Color.WHITE
         }
         font = generator.generateFont(param)
         font.setUseIntegerPositions(false)
-        font.data.setScale(0.04f)
+        font.data.setScale(Constants.FONT_SCALE)
 
         val smallParam = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-            size = 32
+            size = Constants.SMALL_FONT_SIZE
             color = Color.WHITE
         }
         smallFont = generator.generateFont(smallParam)
         smallFont.setUseIntegerPositions(false)
-        smallFont.data.setScale(0.03f)
+        smallFont.data.setScale(Constants.SMALL_FONT_SCALE)
+
+        val tinyParam = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
+            size = Constants.TINY_FONT_SIZE
+            color = Color.WHITE
+        }
+        tinyFont = generator.generateFont(tinyParam)
+        tinyFont.setUseIntegerPositions(false)
+        tinyFont.data.setScale(Constants.TINY_FONT_SCALE)
 
         val largeParam = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-            size = 96
+            size = Constants.LARGE_FONT_SIZE
             color = Color.WHITE
         }
         largeFont = generator.generateFont(largeParam)
         largeFont.setUseIntegerPositions(false)
-        largeFont.data.setScale(0.08f)
+        largeFont.data.setScale(Constants.LARGE_FONT_SCALE)
 
         generator.dispose()
 
@@ -72,7 +82,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
 
         val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/font.ttf"))
         val param = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-            size = 24
+            size = Constants.UI_FONT_SIZE
             color = Color.WHITE
         }
         val uiFont = generator.generateFont(param)
@@ -130,6 +140,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
         batch.dispose()
         font.dispose()
         smallFont.dispose()
+        tinyFont.dispose()
         largeFont.dispose()
     }
 }

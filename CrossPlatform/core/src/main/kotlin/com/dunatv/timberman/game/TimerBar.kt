@@ -13,11 +13,16 @@ class TimerBar {
         private set
 
     private lateinit var progressTexture: Texture
-    private lateinit var progressRegion: TextureRegion
+    private lateinit var frameRegion: TextureRegion
+    private lateinit var trackRegion: TextureRegion
+    private lateinit var fillRegion: TextureRegion
 
     fun load() {
         progressTexture = Texture(Gdx.files.internal("sprites/progress.png"))
-        progressRegion = TextureRegion(progressTexture)
+        val texW = progressTexture.width
+        frameRegion = TextureRegion(progressTexture, 0, 0, texW, 83)
+        trackRegion = TextureRegion(progressTexture, 0, 113, texW, 42)
+        fillRegion = TextureRegion(progressTexture, 0, 181, texW, 33)
     }
 
     fun reset() {
@@ -49,11 +54,22 @@ class TimerBar {
     fun getFillPercent(): Float = ticks / Constants.TIMER_MAX_TICKS.toFloat()
 
     fun render(batch: SpriteBatch, x: Float, y: Float, maxWidth: Float, height: Float) {
-        val fillWidth = maxWidth * getFillPercent()
-        if (fillWidth > 0) {
-            val srcWidth = (progressTexture.width * getFillPercent()).toInt()
-            val fillRegion = TextureRegion(progressTexture, 0, 0, srcWidth, progressTexture.height)
-            batch.draw(fillRegion, x, y, fillWidth, height)
+        val frameAspect = frameRegion.regionWidth.toFloat() / frameRegion.regionHeight
+        val barH = maxWidth / frameAspect
+
+        batch.draw(frameRegion, x, y, maxWidth, barH)
+
+        val trackAspect = trackRegion.regionWidth.toFloat() / trackRegion.regionHeight
+        val trackH = maxWidth / trackAspect
+        val trackY = y + (barH - trackH) / 2f
+        batch.draw(trackRegion, x, trackY, maxWidth, trackH)
+
+        val fill = getFillPercent()
+        if (fill > 0) {
+            val fillW = maxWidth * fill
+            val srcW = (fillRegion.regionWidth * fill).toInt()
+            val partialFill = TextureRegion(progressTexture, fillRegion.regionX, fillRegion.regionY, srcW, fillRegion.regionHeight)
+            batch.draw(partialFill, x, trackY, fillW, trackH)
         }
     }
 
