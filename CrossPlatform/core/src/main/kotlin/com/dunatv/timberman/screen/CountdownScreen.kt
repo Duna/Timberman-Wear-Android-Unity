@@ -22,7 +22,6 @@ class CountdownScreen(game: TimbermanGame) : BaseScreen(game) {
         camera.update()
         batch.projectionMatrix = camera.combined
         batch.begin()
-        game.font.setUseIntegerPositions(false)
         layout.setText(game.font, countText)
         game.font.draw(batch, countText,
             -layout.width / 2f,

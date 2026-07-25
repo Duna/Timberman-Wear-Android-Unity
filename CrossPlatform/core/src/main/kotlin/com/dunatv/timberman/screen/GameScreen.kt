@@ -95,15 +95,15 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
     private fun renderHUD() {
         val scoreText = score.toString()
-        layout.setText(game.font, scoreText)
-        game.font.draw(batch, scoreText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 0.5f)
+        layout.setText(game.smallFont, scoreText)
+        game.smallFont.draw(batch, scoreText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 0.3f)
 
         val bestScore = game.prefs.getHighScore()
         val bestText = "Best: $bestScore"
         layout.setText(game.smallFont, bestText)
-        game.smallFont.draw(batch, bestText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 1.2f)
+        game.smallFont.draw(batch, bestText, -layout.width / 2f, Constants.WORLD_HEIGHT / 2f - 1.0f)
 
-        timerBar.render(batch, -2f, Constants.WORLD_HEIGHT / 2f - 1.8f, 4f, 0.3f)
+        timerBar.render(batch, -2f, Constants.WORLD_HEIGHT / 2f - 1.6f, 4f, 0.3f)
     }
 
     private fun renderTapHint(delta: Float) {

@@ -39,6 +39,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
             color = Color.WHITE
         }
         font = generator.generateFont(param)
+        font.setUseIntegerPositions(false)
         font.data.setScale(0.04f)
 
         val smallParam = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
@@ -46,6 +47,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
             color = Color.WHITE
         }
         smallFont = generator.generateFont(smallParam)
+        smallFont.setUseIntegerPositions(false)
         smallFont.data.setScale(0.03f)
 
         val largeParam = FreeTypeFontGenerator.FreeTypeFontParameter().apply {
@@ -53,6 +55,7 @@ class TimbermanGame(val firebaseService: FirebaseService) : Game() {
             color = Color.WHITE
         }
         largeFont = generator.generateFont(largeParam)
+        largeFont.setUseIntegerPositions(false)
         largeFont.data.setScale(0.08f)
 
         generator.dispose()

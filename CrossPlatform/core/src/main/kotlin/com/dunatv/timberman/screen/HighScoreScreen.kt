@@ -38,37 +38,23 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
         val listTable = Table()
         val playerName = game.prefs.getPlayerName()
 
+        val cachedScores = game.firebaseService.getScoresSync()
+        if (cachedScores.isNotEmpty()) {
+            populateScores(listTable, cachedScores, playerName)
+        } else {
+            listTable.add(Label("Loading...", skin)).center()
+            listTable.row()
+        }
+
         game.firebaseService.getScores { scores ->
             Gdx.app.postRunnable {
-                val sorted = scores.sortedByDescending { it.score }
-                for ((idx, userScore) in sorted.withIndex()) {
-                    val nameLabel = Label("${idx + 1}. ${userScore.name}", skin)
-                    val scoreLabel = Label("${userScore.score}", skin)
-
-                    if (userScore.name == playerName) {
-                        val selfColor = Color(
-                            Constants.LEADERBOARD_SELF_R,
-                            Constants.LEADERBOARD_SELF_G,
-                            Constants.LEADERBOARD_SELF_B,
-                            1f
-                        )
-                        nameLabel.color = selfColor
-                        scoreLabel.color = selfColor
-                    } else {
-                        val otherColor = Color(
-                            Constants.LEADERBOARD_NAME_R,
-                            Constants.LEADERBOARD_NAME_G,
-                            Constants.LEADERBOARD_NAME_B,
-                            1f
-                        )
-                        nameLabel.color = otherColor
-                        scoreLabel.color = otherColor
-                    }
-
-                    listTable.add(nameLabel).expandX().left().padRight(10f)
-                    listTable.add(scoreLabel).right()
-                    listTable.row().padTop(5f)
+                listTable.clear()
+                val allScores = if (scores.isNotEmpty()) scores else cachedScores
+                if (allScores.isEmpty()) {
+                    listTable.add(Label("No scores yet", skin)).center()
+                    return@postRunnable
                 }
+                populateScores(listTable, allScores, playerName)
             }
         }
 
@@ -77,15 +63,52 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
         rootTable.add(scrollPane).expand().fill().padBottom(15f)
         rootTable.row()
 
-        val backButton = ImageButton(TextureRegionDrawable(TextureRegion(backTexture)))
+        val backH = 60f
+        val backW = backH * (37f / 23f)
+        val backDrawable = TextureRegionDrawable(TextureRegion(backTexture))
+        backDrawable.minWidth = backW
+        backDrawable.minHeight = backH
+        val backButton = ImageButton(backDrawable)
         backButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 game.setScreen(StartScreen(game))
             }
         })
-        rootTable.add(backButton).size(60f, 60f)
+        rootTable.add(backButton).size(backW, backH)
 
         stage.addActor(rootTable)
+    }
+
+    private fun populateScores(table: Table, scores: List<UserScore>, playerName: String) {
+        val sorted = scores.sortedByDescending { it.score }
+        for ((idx, userScore) in sorted.withIndex()) {
+            val nameLabel = Label("${idx + 1}. ${userScore.name}", skin)
+            val scoreLabel = Label("${userScore.score}", skin)
+
+            if (userScore.name == playerName) {
+                val selfColor = Color(
+                    Constants.LEADERBOARD_SELF_R,
+                    Constants.LEADERBOARD_SELF_G,
+                    Constants.LEADERBOARD_SELF_B,
+                    1f
+                )
+                nameLabel.color = selfColor
+                scoreLabel.color = selfColor
+            } else {
+                val otherColor = Color(
+                    Constants.LEADERBOARD_NAME_R,
+                    Constants.LEADERBOARD_NAME_G,
+                    Constants.LEADERBOARD_NAME_B,
+                    1f
+                )
+                nameLabel.color = otherColor
+                scoreLabel.color = otherColor
+            }
+
+            table.add(nameLabel).expandX().left().padRight(10f)
+            table.add(scoreLabel).right()
+            table.row().padTop(5f)
+        }
     }
 
     override fun render(delta: Float) {

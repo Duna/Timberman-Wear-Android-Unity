@@ -4,10 +4,10 @@ object Constants {
     const val WORLD_WIDTH = 10f
     const val WORLD_HEIGHT = 10f
 
-    const val PLAYER_LEFT_X = -1.60f
-    const val PLAYER_RIGHT_X = 1.60f
+    const val PLAYER_LEFT_X = -1.4f
+    const val PLAYER_RIGHT_X = 1.4f
     const val PLAYER_Y = -2.4f
-    const val PLAYER_SCALE = 4f
+    const val PLAYER_SCALE = 2.5f
 
     const val TREE_ROOT_Y = -3f
     const val TRUNK_COUNT = 10
