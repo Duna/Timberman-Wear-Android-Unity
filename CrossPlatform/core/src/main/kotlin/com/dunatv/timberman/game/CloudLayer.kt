@@ -7,43 +7,80 @@ import com.dunatv.timberman.util.Constants
 import kotlin.random.Random
 
 class CloudLayer {
-    private data class Cloud(var x: Float, var y: Float, val texture: Texture)
+    private data class Cloud(
+        var x: Float,
+        val y: Float,
+        val w: Float,
+        val h: Float,
+        val speed: Float,
+        val texture: Texture
+    )
 
     private lateinit var cloud1Texture: Texture
     private lateinit var cloud2Texture: Texture
-    private val clouds = mutableListOf<Cloud>()
-    private var cloudWidth = 0f
+    private val backClouds = mutableListOf<Cloud>()
+    private val frontClouds = mutableListOf<Cloud>()
 
     fun load() {
         cloud1Texture = Texture(Gdx.files.internal("textures/cloud1.png"))
         cloud2Texture = Texture(Gdx.files.internal("textures/cloud2.png"))
-        cloudWidth = cloud1Texture.width / 100f
 
-        clouds.clear()
-        for (i in 0 until Constants.CLOUD_COUNT) {
+        backClouds.clear()
+        frontClouds.clear()
+
+        val halfW = Constants.WORLD_WIDTH / 2f
+
+        for (i in 0 until Constants.BACK_CLOUD_COUNT) {
             val tex = if (Random.nextBoolean()) cloud1Texture else cloud2Texture
-            val x = i * cloudWidth
-            val y = 2f + Random.nextFloat() * 1.5f
-            clouds.add(Cloud(x, y, tex))
+            val scale = 0.8f + Random.nextFloat() * 0.4f
+            val w = tex.width / 100f * scale
+            val h = tex.height / 100f * scale
+            val x = -halfW + Random.nextFloat() * Constants.WORLD_WIDTH
+            val y = Random.nextFloat() * (Constants.WORLD_HEIGHT / 2f)
+            backClouds.add(Cloud(x, y, w, h, Constants.BACK_CLOUD_SPEED, tex))
+        }
+
+        for (i in 0 until Constants.FRONT_CLOUD_COUNT) {
+            val tex = if (Random.nextBoolean()) cloud1Texture else cloud2Texture
+            val scale = 1.0f + Random.nextFloat() * 0.5f
+            val w = tex.width / 100f * scale
+            val h = tex.height / 100f * scale
+            val x = -halfW + Random.nextFloat() * Constants.WORLD_WIDTH
+            val y = Random.nextFloat() * (Constants.WORLD_HEIGHT / 2f)
+            frontClouds.add(Cloud(x, y, w, h, Constants.FRONT_CLOUD_SPEED, tex))
         }
     }
 
     fun update(delta: Float) {
-        val tailX = clouds.maxOf { it.x }
-        for (cloud in clouds) {
-            cloud.x -= Constants.CLOUD_SPEED * delta
-            if (cloud.x < -cloudWidth) {
-                cloud.x = tailX + cloudWidth
+        val halfW = Constants.WORLD_WIDTH / 2f
+        for (cloud in backClouds) {
+            cloud.x -= cloud.speed * delta
+            if (cloud.x + cloud.w < -halfW) {
+                cloud.x = halfW
+            }
+        }
+        for (cloud in frontClouds) {
+            cloud.x -= cloud.speed * delta
+            if (cloud.x + cloud.w < -halfW) {
+                cloud.x = halfW
             }
         }
     }
 
-    fun render(batch: SpriteBatch) {
-        for (cloud in clouds) {
-            val w = cloud.texture.width / 100f
-            val h = cloud.texture.height / 100f
-            batch.draw(cloud.texture, cloud.x, cloud.y, w, h)
+    fun renderBack(batch: SpriteBatch) {
+        for (cloud in backClouds) {
+            batch.draw(cloud.texture, cloud.x, cloud.y, cloud.w, cloud.h)
         }
+    }
+
+    fun renderFront(batch: SpriteBatch) {
+        for (cloud in frontClouds) {
+            batch.draw(cloud.texture, cloud.x, cloud.y, cloud.w, cloud.h)
+        }
+    }
+
+    fun render(batch: SpriteBatch) {
+        renderBack(batch)
     }
 
     fun dispose() {

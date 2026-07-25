@@ -22,9 +22,11 @@ object Constants {
     const val HIT_FRAME_DURATION = 1f / 12f
     const val DEATH_FRAME_DURATION = 1f / 3f
 
-    const val CLOUD_SPEED = 0.4f
     const val BG_SCROLL_SPEED = 0.2f
-    const val CLOUD_COUNT = 3
+    const val BACK_CLOUD_COUNT = 3
+    const val BACK_CLOUD_SPEED = 0.3f
+    const val FRONT_CLOUD_COUNT = 2
+    const val FRONT_CLOUD_SPEED = 0.8f
 
     const val SCORE_MARKER_X = 3.95f
 

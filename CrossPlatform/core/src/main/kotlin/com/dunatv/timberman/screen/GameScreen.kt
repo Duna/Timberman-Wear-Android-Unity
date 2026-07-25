@@ -85,9 +85,10 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         batch.begin()
 
         backgroundLayer.render(batch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT)
-        cloudLayer.render(batch)
+        cloudLayer.renderBack(batch)
         treeManager.render(batch)
         player.render(batch)
+        cloudLayer.renderFront(batch)
 
         renderHUD()
 
