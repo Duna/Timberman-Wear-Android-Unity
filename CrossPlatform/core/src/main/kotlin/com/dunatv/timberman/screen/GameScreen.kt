@@ -25,6 +25,8 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
     private lateinit var tapTexture: Texture
 
     override fun show() {
+        Gdx.input.inputProcessor = null
+
         player.load()
         treeManager.load()
         timerBar.load()
@@ -47,11 +49,12 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
         clearScreen()
 
-        timerBar.update(delta)
-        if (timerBar.isDead) {
-            onGameOver()
-            return
-        }
+        // timerBar.update(delta)
+        // if (timerBar.isDead) {
+        //     Gdx.app.log("TimbermanGame", "DEATH by timer, score=$score")
+        //     onGameOver()
+        //     return
+        // }
 
         cloudLayer.update(delta)
         backgroundLayer.update(delta)
@@ -59,14 +62,16 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
         val chopped = player.handleInput()
         if (chopped) {
+            score++
+            timerBar.addTick()
+            Gdx.app.log("TimbermanGame", "after chop: timerTicks=${timerBar.getFillPercent() * Constants.TIMER_MAX_TICKS}, timerFill=${timerBar.getFillPercent()}")
             val died = treeManager.chop(player.isLeft, score)
             if (died) {
+                Gdx.app.log("TimbermanGame", "DEATH by branch collision, score=$score, playerIsLeft=${player.isLeft}")
                 player.die()
                 onGameOver()
                 return
             }
-            score++
-            timerBar.addTick()
             treeManager.enablePlayerHit(player)
 
             if (tapHintVisible) {
@@ -131,13 +136,18 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
     private fun onGameOver() {
         gameOver = true
+        Gdx.app.log("TimbermanGame", ">>> onGameOver CALLED, score=$score, stacktrace:")
+        Thread.currentThread().stackTrace.take(8).forEach {
+            Gdx.app.log("TimbermanGame", "  at ${it.className}.${it.methodName}(${it.fileName}:${it.lineNumber})")
+        }
+        val playerName = game.prefs.getPlayerName()
+        val prevHigh = game.prefs.getHighScore()
         val isNewBest = game.prefs.updateHighScore(score)
-        if (isNewBest) {
-            game.firebaseService.submitScore(
-                game.prefs.getPlayerName(),
-                score,
-                game.prefs.getHighScore()
-            )
+        val bestScore = game.prefs.getHighScore()
+        Gdx.app.log("TimbermanGame", "onGameOver: score=$score, playerName=$playerName, prevHigh=$prevHigh, isNewBest=$isNewBest, bestScore=$bestScore")
+        if (bestScore > 0) {
+            Gdx.app.log("TimbermanGame", "Submitting bestScore=$bestScore to Firebase...")
+            game.firebaseService.submitScore(playerName, bestScore, prevHigh)
         }
         game.setScreen(GameOverScreen(game, score))
     }

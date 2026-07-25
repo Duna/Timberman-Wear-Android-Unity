@@ -7,14 +7,14 @@ object Constants {
     const val PLAYER_LEFT_X = -1.4f
     const val PLAYER_RIGHT_X = 1.4f
     const val PLAYER_Y = -2.4f
-    const val PLAYER_SCALE = 2.5f
+    const val PLAYER_SCALE = 3.5f
 
-    const val TREE_ROOT_Y = -3f
+    const val TREE_ROOT_Y = -3.2f
     const val TRUNK_COUNT = 10
     const val TRUNK_SCALE = 4f
     const val BRANCH_OFFSET_X = -0.3695f
 
-    const val TIMER_DRAIN_INTERVAL = 0.4f
+    const val TIMER_DRAIN_INTERVAL = 2.0f
     const val TIMER_MAX_TICKS = 10
 
     const val HIT_ANIM_DURATION = 0.1f

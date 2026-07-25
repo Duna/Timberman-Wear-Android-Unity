@@ -39,6 +39,7 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
         val playerName = game.prefs.getPlayerName()
 
         val cachedScores = game.firebaseService.getScoresSync()
+        Gdx.app.log("TimbermanGame", "HighScoreScreen: cachedScores=${cachedScores.size}")
         if (cachedScores.isNotEmpty()) {
             populateScores(listTable, cachedScores, playerName)
         } else {
@@ -46,14 +47,18 @@ class HighScoreScreen(game: TimbermanGame) : BaseScreen(game) {
             listTable.row()
         }
 
+        Gdx.app.log("TimbermanGame", "HighScoreScreen: calling getScores...")
         game.firebaseService.getScores { scores ->
+            Gdx.app.log("TimbermanGame", "HighScoreScreen: getScores callback, got ${scores.size} scores")
             Gdx.app.postRunnable {
                 listTable.clear()
                 val allScores = if (scores.isNotEmpty()) scores else cachedScores
                 if (allScores.isEmpty()) {
+                    Gdx.app.log("TimbermanGame", "HighScoreScreen: no scores to display")
                     listTable.add(Label("No scores yet", skin)).center()
                     return@postRunnable
                 }
+                Gdx.app.log("TimbermanGame", "HighScoreScreen: displaying ${allScores.size} scores")
                 populateScores(listTable, allScores, playerName)
             }
         }

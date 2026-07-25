@@ -1,5 +1,6 @@
 package com.dunatv.timberman.screen
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.dunatv.timberman.TimbermanGame
 import com.dunatv.timberman.util.Constants
@@ -7,6 +8,10 @@ import com.dunatv.timberman.util.Constants
 class CountdownScreen(game: TimbermanGame) : BaseScreen(game) {
     private var timeRemaining = Constants.COUNTDOWN_SECONDS.toFloat()
     private val layout = GlyphLayout()
+
+    override fun show() {
+        Gdx.input.inputProcessor = null
+    }
 
     override fun render(delta: Float) {
         clearScreen()

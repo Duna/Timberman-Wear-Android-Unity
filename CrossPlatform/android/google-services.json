@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "900155136240",
-    "firebase_url": "https://fullscreen2022-c3dc9-default-rtdb.firebaseio.com",
-    "project_id": "fullscreen2022-c3dc9",
-    "storage_bucket": "fullscreen2022-c3dc9.firebasestorage.app"
+    "project_number": "902599840848",
+    "firebase_url": "https://smart-timberman-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "smart-timberman",
+    "storage_bucket": "smart-timberman.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:900155136240:android:260b1f16e043a03a704a35",
+        "mobilesdk_app_id": "1:902599840848:android:9e0acfcee7935f44ff2d55",
         "android_client_info": {
           "package_name": "com.dunatv.timberman"
         }
@@ -16,26 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBIqrY0yFIII1k5yVreO2fJp9rsjqgr5so"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:900155136240:android:af81473fdf1da065704a35",
-        "android_client_info": {
-          "package_name": "com.full.imm"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBIqrY0yFIII1k5yVreO2fJp9rsjqgr5so"
+          "current_key": "AIzaSyDJZcjHNhWwpvr_bzDPp7RT01NJli1LAmA"
         }
       ],
       "services": {

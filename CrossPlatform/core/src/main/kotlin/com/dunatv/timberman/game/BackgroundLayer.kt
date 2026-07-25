@@ -17,22 +17,21 @@ class BackgroundLayer {
 
     fun update(delta: Float) {
         scrollOffset += Constants.BG_SCROLL_SPEED * delta
-        val bgBgW = bgBgTexture.width / 100f
-        if (scrollOffset > bgBgW) scrollOffset -= bgBgW
     }
 
     fun render(batch: SpriteBatch, worldWidth: Float, worldHeight: Float) {
         val halfW = worldWidth / 2f
         val halfH = worldHeight / 2f
 
-        // Distant forest (tree_bg_bg) — scrolls slowly for parallax
         val bgBgW = bgBgTexture.width / 100f
         val bgBgH = bgBgTexture.height / 100f
         val bgBgScale = worldHeight / bgBgH
         val scaledBgBgW = bgBgW * bgBgScale
 
-        var x = -halfW - scrollOffset
-        while (x < halfW + scaledBgBgW) {
+        val wrappedOffset = scrollOffset % scaledBgBgW
+
+        var x = -halfW - wrappedOffset
+        while (x < halfW) {
             batch.draw(bgBgTexture, x, -halfH, scaledBgBgW, worldHeight)
             x += scaledBgBgW
         }

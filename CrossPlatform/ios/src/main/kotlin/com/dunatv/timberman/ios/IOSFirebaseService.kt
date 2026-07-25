@@ -7,7 +7,7 @@ import com.dunatv.timberman.firebase.FirebaseService
 import com.dunatv.timberman.firebase.UserScore
 
 class IOSFirebaseService : FirebaseService {
-    private val dbUrl = "https://fullscreen2022-c3dc9-default-rtdb.firebaseio.com/top"
+    private val dbUrl = "https://smart-timberman-default-rtdb.europe-west1.firebasedatabase.app/top"
     private var cachedScores: List<UserScore> = emptyList()
 
     override fun initialize() {
@@ -17,19 +17,21 @@ class IOSFirebaseService : FirebaseService {
     }
 
     override fun submitScore(name: String, score: Int, previousHighScore: Int) {
-        val json = """{"Name":"$name","Score":$score,"Timestamp":${System.currentTimeMillis() / 1000}}"""
-        val request = Net.HttpRequest(Net.HttpMethods.PUT).apply {
-            url = "$dbUrl/$score.json"
-            content = json
-            setHeader("Content-Type", "application/json")
+        val getRequest = Net.HttpRequest(Net.HttpMethods.GET).apply {
+            url = "$dbUrl/$name.json"
         }
-        Gdx.net.sendHttpRequest(request, object : Net.HttpResponseListener {
+        Gdx.net.sendHttpRequest(getRequest, object : Net.HttpResponseListener {
             override fun handleHttpResponse(httpResponse: Net.HttpResponse) {
-                if (previousHighScore > 0 && previousHighScore != score) {
-                    val deleteReq = Net.HttpRequest(Net.HttpMethods.DELETE).apply {
-                        url = "$dbUrl/$previousHighScore.json"
+                val responseStr = httpResponse.resultAsString
+                val existingScore = extractJsonNumber(responseStr, "Score")
+                if (score > existingScore) {
+                    val json = """{"Name":"$name","Score":$score,"Timestamp":${System.currentTimeMillis() / 1000}}"""
+                    val putRequest = Net.HttpRequest(Net.HttpMethods.PUT).apply {
+                        url = "$dbUrl/$name.json"
+                        content = json
+                        setHeader("Content-Type", "application/json")
                     }
-                    Gdx.net.sendHttpRequest(deleteReq, object : Net.HttpResponseListener {
+                    Gdx.net.sendHttpRequest(putRequest, object : Net.HttpResponseListener {
                         override fun handleHttpResponse(httpResponse: Net.HttpResponse) {}
                         override fun failed(t: Throwable?) {}
                         override fun cancelled() {}
