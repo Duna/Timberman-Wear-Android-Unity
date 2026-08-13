@@ -119,6 +119,8 @@ class Player {
 
     fun getX(): Float = if (isLeft) Constants.PLAYER_LEFT_X else Constants.PLAYER_RIGHT_X
     fun getY(): Float = Constants.PLAYER_Y
+    fun getWidth(): Float = width
+    fun getHeight(): Float = height
 
     fun render(batch: SpriteBatch) {
         val frame = when (state) {

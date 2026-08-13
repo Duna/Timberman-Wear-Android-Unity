@@ -20,6 +20,11 @@ class BackgroundLayer {
     }
 
     fun render(batch: SpriteBatch, worldWidth: Float, worldHeight: Float) {
+        renderBack(batch, worldWidth, worldHeight)
+        renderFront(batch, worldWidth, worldHeight)
+    }
+
+    fun renderBack(batch: SpriteBatch, worldWidth: Float, worldHeight: Float) {
         val halfW = worldWidth / 2f
         val halfH = worldHeight / 2f
 
@@ -35,8 +40,12 @@ class BackgroundLayer {
             batch.draw(bgBgTexture, x, -halfH, scaledBgBgW, worldHeight)
             x += scaledBgBgW
         }
+    }
 
-        // Main scenery frame (tree_bg) — static, covers full viewport
+    fun renderFront(batch: SpriteBatch, worldWidth: Float, worldHeight: Float) {
+        val halfW = worldWidth / 2f
+        val halfH = worldHeight / 2f
+
         val bgW = bgTexture.width / 100f
         val bgH = bgTexture.height / 100f
         val scaleX = worldWidth / bgW

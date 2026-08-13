@@ -74,6 +74,22 @@ object Constants {
     const val GAMEOVER_SCORE_PAD_BOTTOM = 8f
     const val GAMEOVER_BEST_PAD_BOTTOM = 12f
 
+    // Dragon
+    const val DRAGON_SCORE_INTERVAL = 10
+    const val DRAGON_SCALE = 8f
+    const val DRAGON_FLY_SPEED = 4f
+    const val DRAGON_BREATH_DURATION = 1f
+    const val DRAGON_BURN_DURATION = 5f
+    const val DRAGON_FRAME_COUNT = 4
+    const val DRAGON_WING_SPEED = 0.15f
+    const val DRAGON_BOB_SPEED = 5f
+    const val DRAGON_BOB_AMOUNT = 0.6f
+    const val DRAGON_BREATH_BOB_SPEED = 3f
+    const val DRAGON_BREATH_BOB_AMOUNT = 1.2f
+    const val DRAGON_BREATH_ROTATION = 15f
+    const val FLAME_FRAME_COUNT = 4
+    const val FLAME_FRAME_DURATION = 0.08f
+
     // Fonts
     const val FONT_SIZE = 48
     const val FONT_SCALE = 0.04f

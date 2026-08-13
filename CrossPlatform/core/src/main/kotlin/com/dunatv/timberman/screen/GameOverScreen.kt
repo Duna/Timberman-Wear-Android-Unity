@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -17,11 +17,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.dunatv.timberman.TimbermanGame
 import com.dunatv.timberman.util.Constants
 
-class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScreen(game) {
+class GameOverScreen(game: TimbermanGame, private val finalScore: Int, private val stoneKill: Boolean = false) : BaseScreen(game) {
     private lateinit var stage: Stage
     private lateinit var skin: Skin
     private lateinit var gameOverTexture: Texture
     private lateinit var gameOverBgTexture: Texture
+    private lateinit var okTexture: Texture
+    private var gravestoneTexture: Texture? = null
 
     override fun show() {
         skin = game.createSkin()
@@ -30,6 +32,7 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
 
         gameOverTexture = Texture(Gdx.files.internal("textures/game_over.png"))
         gameOverBgTexture = Texture(Gdx.files.internal("sprites/game_over_bg.png"))
+        okTexture = Texture(Gdx.files.internal("textures/ok.png"))
 
         // Extract regions from the sprite sheets
         val boardRegion = TextureRegion(gameOverBgTexture, 0, 0, 149, 135)
@@ -91,16 +94,31 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
         boardTable.add(bestLabel).expandX().center().padBottom(Constants.GAMEOVER_BEST_PAD_BOTTOM)
         boardTable.row()
 
-        val okButton = TextButton("OK", skin)
+        val okDrawable = TextureRegionDrawable(TextureRegion(okTexture))
+        val okBtnH = Constants.BUTTON_SIZE
+        val okBtnW = okBtnH * Constants.BUTTON_ASPECT_RATIO
+        okDrawable.minWidth = okBtnW
+        okDrawable.minHeight = okBtnH
+        val okButton = ImageButton(okDrawable)
         okButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 game.setScreen(StartScreen(game))
             }
         })
-        boardTable.add(okButton).width(100f).height(35f).center()
+        boardTable.add(okButton).size(okBtnW, okBtnH).center()
 
         stage.addActor(boardTable)
         stage.addActor(goImage)
+
+        if (stoneKill) {
+            gravestoneTexture = Texture(Gdx.files.internal("textures/gravestone.png"))
+            val gsRegion = TextureRegion(gravestoneTexture)
+            val gsW = 80f
+            val gsH = 80f
+            val gsImage = Image(TextureRegionDrawable(gsRegion))
+            gsImage.setBounds((screenW - gsW) / 2f, boardY - gsH - 10f, gsW, gsH)
+            stage.addActor(gsImage)
+        }
     }
 
     override fun render(delta: Float) {
@@ -118,5 +136,7 @@ class GameOverScreen(game: TimbermanGame, private val finalScore: Int) : BaseScr
         if (::skin.isInitialized) skin.dispose()
         if (::gameOverTexture.isInitialized) gameOverTexture.dispose()
         if (::gameOverBgTexture.isInitialized) gameOverBgTexture.dispose()
+        if (::okTexture.isInitialized) okTexture.dispose()
+        gravestoneTexture?.dispose()
     }
 }

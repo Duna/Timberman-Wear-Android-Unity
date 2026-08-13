@@ -14,10 +14,14 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
     private val timerBar = TimerBar()
     private val cloudLayer = CloudLayer()
     private val backgroundLayer = BackgroundLayer()
+    private val dragonAttack = DragonAttack()
+    private val stoneAttack = StoneAttack()
 
     private var score = 0
     private var gameOver = false
     private val layout = GlyphLayout()
+    private var nextDragonScore = Constants.DRAGON_SCORE_INTERVAL
+    private var dragonInterval = Constants.DRAGON_SCORE_INTERVAL
 
     private var tapHintVisible = false
     private var tapHintAlpha = 1f
@@ -32,14 +36,20 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         timerBar.load()
         cloudLayer.load()
         backgroundLayer.load()
+        dragonAttack.load()
+        stoneAttack.load()
 
         tapTexture = Texture(Gdx.files.internal("textures/tap.png"))
 
         player.reset()
         timerBar.reset()
+        dragonAttack.reset()
+        stoneAttack.reset()
         treeManager.initialize(game.firebaseService.getScoresSync())
         player.groundY = treeManager.getGroundY()
         score = 0
+        nextDragonScore = Constants.DRAGON_SCORE_INTERVAL
+        dragonInterval = Constants.DRAGON_SCORE_INTERVAL
         gameOver = false
         tapHintVisible = !game.prefs.isTapShown()
     }
@@ -49,34 +59,65 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
 
         clearScreen()
 
-        timerBar.update(delta)
-        if (timerBar.isDead) {
-            Gdx.app.log("TimbermanGame", "DEATH by timer, score=$score")
-            onGameOver()
-            return
+        if (!dragonAttack.isActive) {
+            timerBar.update(delta)
+            if (timerBar.isDead) {
+                Gdx.app.log("TimbermanGame", "DEATH by timer, score=$score")
+                onGameOver()
+                return
+            }
         }
 
         cloudLayer.update(delta)
         backgroundLayer.update(delta)
         player.update(delta)
 
-        val chopped = player.handleInput()
-        if (chopped) {
-            score++
-            timerBar.addTick()
-            Gdx.app.log("TimbermanGame", "after chop: timerTicks=${timerBar.getFillPercent() * Constants.TIMER_MAX_TICKS}, timerFill=${timerBar.getFillPercent()}")
-            val died = treeManager.chop(player.isLeft, score)
-            if (died) {
-                Gdx.app.log("TimbermanGame", "DEATH by branch collision, score=$score, playerIsLeft=${player.isLeft}")
-                player.die()
-                onGameOver()
-                return
+        val burnFinished = dragonAttack.update(delta)
+        if (burnFinished) {
+            val blueX = dragonAttack.getRandomBlueFlameX()
+            treeManager.clearAllBranches()
+            dragonAttack.reset()
+            if (blueX != null) {
+                stoneAttack.trigger(blueX)
             }
-            treeManager.enablePlayerHit(player)
+        }
 
-            if (tapHintVisible) {
-                tapHintVisible = false
-                game.prefs.setTapShown()
+        stoneAttack.update(delta)
+        if (stoneAttack.isActive && stoneAttack.checkHit(player.getX(), player.groundY, player.getWidth(), player.getHeight())) {
+            Gdx.app.log("TimbermanGame", "DEATH by falling stone, score=$score")
+            player.die()
+            onGameOver(stoneKill = true)
+            return
+        }
+
+        if (!dragonAttack.isActive) {
+            val chopped = player.handleInput()
+            if (chopped) {
+                score++
+                timerBar.addTick()
+                Gdx.app.log("TimbermanGame", "after chop: timerTicks=${timerBar.getFillPercent() * Constants.TIMER_MAX_TICKS}, timerFill=${timerBar.getFillPercent()}")
+                val died = treeManager.chop(player.isLeft, score)
+                if (died) {
+                    Gdx.app.log("TimbermanGame", "DEATH by branch collision, score=$score, playerIsLeft=${player.isLeft}")
+                    player.die()
+                    onGameOver()
+                    return
+                }
+                treeManager.enablePlayerHit(player)
+
+                if (tapHintVisible) {
+                    tapHintVisible = false
+                    game.prefs.setTapShown()
+                }
+
+                if (score >= nextDragonScore) {
+                    dragonInterval += Constants.DRAGON_SCORE_INTERVAL
+                    nextDragonScore = score + dragonInterval
+                    val branchPositions = treeManager.getBranchPositions()
+                    if (branchPositions.isNotEmpty()) {
+                        dragonAttack.trigger(branchPositions)
+                    }
+                }
             }
         }
 
@@ -84,10 +125,14 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         batch.projectionMatrix = camera.combined
         batch.begin()
 
-        backgroundLayer.render(batch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT)
+        backgroundLayer.renderBack(batch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT)
+        stoneAttack.render(batch)
+        backgroundLayer.renderFront(batch, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT)
         cloudLayer.renderBack(batch)
-        treeManager.render(batch)
+        dragonAttack.renderFlames(batch)
+        treeManager.render(batch, dragonAttack.branchAlpha)
         player.render(batch)
+        dragonAttack.renderDragon(batch)
         cloudLayer.renderFront(batch)
 
         renderHUD()
@@ -135,7 +180,7 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         batch.color = oldColor
     }
 
-    private fun onGameOver() {
+    private fun onGameOver(stoneKill: Boolean = false) {
         gameOver = true
         Gdx.app.log("TimbermanGame", ">>> onGameOver CALLED, score=$score, stacktrace:")
         Thread.currentThread().stackTrace.take(8).forEach {
@@ -150,7 +195,7 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
             Gdx.app.log("TimbermanGame", "Submitting bestScore=$bestScore to Firebase...")
             game.firebaseService.submitScore(playerName, bestScore, prevHigh)
         }
-        game.setScreen(GameOverScreen(game, score))
+        game.setScreen(GameOverScreen(game, score, stoneKill))
     }
 
     override fun dispose() {
@@ -159,6 +204,8 @@ class GameScreen(game: TimbermanGame) : BaseScreen(game) {
         timerBar.dispose()
         cloudLayer.dispose()
         backgroundLayer.dispose()
+        dragonAttack.dispose()
+        stoneAttack.dispose()
         if (::tapTexture.isInitialized) tapTexture.dispose()
     }
 }

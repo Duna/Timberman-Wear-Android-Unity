@@ -115,7 +115,7 @@ class TreeManager {
         }
     }
 
-    fun render(batch: SpriteBatch) {
+    fun render(batch: SpriteBatch, branchAlpha: Float = 1f) {
         val trunkW = trunkTexture.width / 100f * scale
         val trunkH = trunkHeight
 
@@ -127,18 +127,21 @@ class TreeManager {
 
         val branchW = leafTexture.width / 100f * scale
         val branchH = leafTexture.height / 100f * scale
+        val oldColor = batch.color.cpy()
 
         for (segment in segments) {
             batch.draw(trunkRegion, -trunkW / 2f, segment.y, trunkW, trunkH)
 
             if (segment.branch != BranchSide.NONE) {
                 val branchY = segment.y + (trunkH - branchH) / 2f
+                if (branchAlpha < 1f) batch.setColor(1f, 1f, 1f, branchAlpha)
 
                 if (segment.branch == BranchSide.LEFT) {
                     batch.draw(leafRegion, -trunkW / 2f - branchW + branchW * 0.1f, branchY, branchW, branchH)
                 } else {
                     batch.draw(leafFlippedRegion, trunkW / 2f - branchW * 0.1f, branchY, branchW, branchH)
                 }
+                if (branchAlpha < 1f) batch.color = oldColor
             }
         }
     }
@@ -158,6 +161,25 @@ class TreeManager {
         }
         sb.append("--- END TREE ---")
         Gdx.app.log("TimbermanTree", sb.toString())
+    }
+
+    fun getBranchPositions(): List<Pair<Float, Float>> {
+        val trunkW = trunkTexture.width / 100f * scale
+        val positions = mutableListOf<Pair<Float, Float>>()
+        for (segment in segments) {
+            if (segment.branch == BranchSide.LEFT) {
+                positions.add(Pair(-trunkW / 2f - 0.7f, segment.y + trunkHeight * 0.3f + 0.12f))
+            } else if (segment.branch == BranchSide.RIGHT) {
+                positions.add(Pair(trunkW / 2f + 0.7f, segment.y + trunkHeight * 0.3f + 0.12f))
+            }
+        }
+        return positions
+    }
+
+    fun clearAllBranches() {
+        for (segment in segments) {
+            segment.branch = BranchSide.NONE
+        }
     }
 
     fun getGroundY(): Float = Constants.TREE_ROOT_Y
