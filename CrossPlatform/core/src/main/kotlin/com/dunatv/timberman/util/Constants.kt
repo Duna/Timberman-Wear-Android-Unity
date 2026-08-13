@@ -18,8 +18,8 @@ object Constants {
     const val BRANCH_OFFSET_X = -0.3695f
 
     // Timer
-    const val TIMER_DRAIN_INTERVAL = 2.0f
-    const val TIMER_MAX_TICKS = 10
+    const val TIMER_DRAIN_INTERVAL = 0.5f
+    const val TIMER_MAX_TICKS = 5
 
     // Animation
     const val HIT_ANIM_DURATION = 0.1f
