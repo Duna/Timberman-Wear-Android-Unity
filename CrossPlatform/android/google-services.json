@@ -1,14 +1,13 @@
 {
   "project_info": {
-    "project_number": "902599840848",
-    "firebase_url": "https://smart-timberman-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "smart-timberman",
-    "storage_bucket": "smart-timberman.firebasestorage.app"
+    "project_number": "419115533667",
+    "project_id": "games-682d9",
+    "storage_bucket": "games-682d9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:902599840848:android:9e0acfcee7935f44ff2d55",
+        "mobilesdk_app_id": "1:419115533667:android:fcd0d2f903aa159b81ff56",
         "android_client_info": {
           "package_name": "com.dunatv.timberman"
         }
@@ -16,7 +15,64 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDJZcjHNhWwpvr_bzDPp7RT01NJli1LAmA"
+          "current_key": "AIzaSyCXDtukWZJ8Ri42l-EoHLttvjJYJXECtIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419115533667:android:fed764847d758c7481ff56",
+        "android_client_info": {
+          "package_name": "com.lemmings.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDtukWZJ8Ri42l-EoHLttvjJYJXECtIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419115533667:android:fb63a87a9797297181ff56",
+        "android_client_info": {
+          "package_name": "com.sokoban.wearos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDtukWZJ8Ri42l-EoHLttvjJYJXECtIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419115533667:android:3a3fd0706c22add981ff56",
+        "android_client_info": {
+          "package_name": "com.volfied.game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDtukWZJ8Ri42l-EoHLttvjJYJXECtIY"
         }
       ],
       "services": {
